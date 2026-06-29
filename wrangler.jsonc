@@ -3,7 +3,7 @@
   "main": "_worker.js",
   "compatibility_date": "2025-07-13",
   "vars": {
-    "PASSWORD": "codingriver2026"
+    "PASSWORD": ""
   },
   "routes": [
     {
