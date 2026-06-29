@@ -9,10 +9,12 @@
 ## 1：修改worker，`Ctrl + F`找到密码行
 
 ```
-const password
+const defaultPassword
 ```
 
 ![密码](img/depoly/pwd.png)
+
+本fork默认内置密码为`codingriver2026`，同时支持从Cloudflare环境变量`PASSWORD`读取密码。Cloudflare环境变量存在时会覆盖内置默认值；没有设置`PASSWORD`时才使用`defaultPassword`。
 
 ## 如果选择打开`showPwdPage`，那么可以直接输入密码（有效期1周），无需后续步骤。
 默认打开 `showPwdPage`。

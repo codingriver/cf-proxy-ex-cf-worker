@@ -28,7 +28,8 @@ const str = "/";
 const lastVisitProxyCookie = "__PROXY_VISITEDSITE__";
 const passwordCookieName = "__PROXY_PWD__";
 const proxyHintCookieName = "__PROXY_HINT__";
-const password = "Ww321456";
+const defaultPassword = "codingriver2026";
+const password = typeof PASSWORD !== "undefined" ? PASSWORD : defaultPassword;
 const showPasswordPage = true;
 const replaceUrlObj = "__location__yproxy__";
 
