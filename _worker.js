@@ -1,17 +1,34 @@
-export default {
-    async fetch(request) {
-        const url = new URL(request.url);
-        thisProxyServerUrlHttps = `${url.protocol}//${url.hostname}/`;
-        thisProxyServerUrl_hostOnly = url.host;
-        return await handleRequest(request);
+addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  thisProxyServerUrlHttps = `${url.protocol}//${url.hostname}/`;
+  thisProxyServerUrl_hostOnly = url.host;
+
+  var pwdVerifiedByUrl = false;
+  if (password != "" && url.pathname.length > 1) {
+    var secondSlash = url.pathname.indexOf("/", 1);
+    if (secondSlash > 1) {
+      var firstSegment = url.pathname.substring(1, secondSlash);
+      if (firstSegment === password) {
+        pwdVerifiedByUrl = true;
+        thisProxyServerUrlHttps = `${url.protocol}//${url.host}/${password}/`;
+        var newPathname = url.pathname.substring(secondSlash);
+        var newUrlStr = url.protocol + "//" + url.host + newPathname + url.search + url.hash;
+        var newRequest = new Request(newUrlStr, event.request);
+        event.respondWith(handleRequest(newRequest, pwdVerifiedByUrl));
+        return;
+      }
     }
-}
+  }
+
+  event.respondWith(handleRequest(event.request, pwdVerifiedByUrl))
+})
+
 
 const str = "/";
 const lastVisitProxyCookie = "__PROXY_VISITEDSITE__";
 const passwordCookieName = "__PROXY_PWD__";
 const proxyHintCookieName = "__PROXY_HINT__";
-const password = "123";
+const password = "Ww321456";
 const showPasswordPage = true;
 const replaceUrlObj = "__location__yproxy__";
 
@@ -500,26 +517,6 @@ function windowLocationInject() {
     console.log("WINDOW LOCATION INJECTED");
 }
 
-function safeFallbackLocationInject() {
-
-    Object.defineProperty(Object.prototype, '${replaceUrlObj}', {
-        get: function () {
-            console.log("*** GET SAFE FALLBACK CALLED ***");
-            // window / document 有 own property，会优先命中各自 getter，不会走到这里
-            return this == null ? undefined : this.location;
-        },
-        set: function (value) {
-            console.log("*** SET SAFE FALLBACK CALLED ***");
-            if (this != null) this.location = value;
-        },
-        configurable: true,
-        enumerable: false   // 不能污染 for-in / Object.keys / JSON.stringify
-    });
-    console.log("OBJECT PROTOTYPE LOCATION FALLBACK INJECTED");
-
-}
-
-
 
 
 
@@ -772,7 +769,6 @@ elementPropertyInject();
 appendChildInject();
 documentLocationInject();
 windowLocationInject();
-safeFallbackLocationInject();
 historyInject();
 
 
@@ -1085,7 +1081,7 @@ const pwdPage = `
                     var password = document.getElementById('password').value;
                     var currentOrigin = window.location.origin;
                     var oneWeekLater = new Date();
-                    oneWeekLater.setTime(oneWeekLater.getTime() + (7 * 24 * 60 * 60 * 1000)); // 一周的毫秒数
+                    oneWeekLater.setTime(oneWeekLater.getTime() + (10 * 365 * 24 * 60 * 60 * 1000)); // 10年的毫秒数
                     document.cookie = "${passwordCookieName}" + "=" + password + "; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + cookieDomain;
                     document.cookie = "${passwordCookieName}" + "=" + password + "; expires=" + oneWeekLater.toUTCString() + "; path=/; domain=" + cookieDomain;
                 } catch(e) {
@@ -1114,7 +1110,7 @@ const redirectError = `
 
 //new URL(请求路径, base路径).href;
 
-async function handleRequest(request) {
+async function handleRequest(request, pwdVerifiedByUrl = false) {
 
   // =======================================================================================
   // *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 前置条件 *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
@@ -1135,7 +1131,7 @@ async function handleRequest(request) {
   var siteCookie = request.headers.get('Cookie');
 
 
-  if (password != "") {
+  if (password != "" && !pwdVerifiedByUrl) {
     if (siteCookie != null && siteCookie != "") {
       var pwd = getCook(passwordCookieName, siteCookie);
       console.log(pwd);

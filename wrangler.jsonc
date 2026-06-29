@@ -1,4 +1,11 @@
 {
+  "name": "cf-proxy-ex",
   "main": "_worker.js",
-  "compatibility_date": "2025-07-13"
+  "compatibility_date": "2025-07-13",
+  "routes": [
+    {
+      "pattern": "proxy.303066.xyz",
+      "custom_domain": true
+    }
+  ]
 }

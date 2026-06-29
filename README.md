@@ -1,5 +1,18 @@
 <!-- Markdown提示/错误等：https://github.com/orgs/community/discussions/16925-->
 
+> [!NOTE]
+> This fork is maintained at https://github.com/codingriver/cf-proxy-ex-cf-worker and is based on https://github.com/1234567Yang/cf-proxy-ex.
+>
+> Local changes in this fork:
+> - Adds `wrangler.jsonc` Worker metadata for `cf-proxy-ex`.
+> - Configures the Cloudflare custom domain route `proxy.303066.xyz`.
+> - Uses the classic `addEventListener("fetch")` Worker entrypoint.
+> - Supports password verification from the first URL path segment, so requests can be opened as `https://<domain>/<password>/https://example.com`.
+> - Sets the password cookie lifetime to 10 years.
+> - Removes the Object prototype fallback location injection.
+>
+> Deployment note: a comparison against the Cloudflare `cf-proxy-ex` production deployment on 2026-06-29 found that the bundled Worker code only differed by the configured password value. The Cloudflare deployment also had a plain-text `PASSWORD` binding configured in the dashboard, while this repository stores the current password directly in `_worker.js`.
+
 
 <div align="center">
 <h1>Cloudflare Proxy EX</h1>
